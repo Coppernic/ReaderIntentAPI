@@ -1,0 +1,2 @@
+include ':scan'
+rootProject.name = "Scan"
