@@ -60,10 +60,10 @@ class ScanTest {
         scan.registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 assert(
-                    intent.action == ACTION_RFID_SUCCESS ||
-                            intent.action == ACTION_RFID_ERROR
+                    intent.action == ACTION_SCAN_SUCCESS ||
+                            intent.action == ACTION_SCAN_ERROR
                 )
-                if (intent.action == ACTION_RFID_SUCCESS) {
+                if (intent.action == ACTION_SCAN_SUCCESS) {
                     assert(!intent.getStringExtra(KEY_DATA_CARD_NUMBER).isNullOrEmpty())
                     assert(!intent.getStringExtra(KEY_RFID_DATA_COMPANY_CODE).isNullOrEmpty())
                     assert(!intent.getStringExtra(KEY_RFID_DATA_FACILITY_CODE).isNullOrEmpty())
