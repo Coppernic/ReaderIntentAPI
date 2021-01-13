@@ -1,4 +1,4 @@
-package fr.coppernic.sdk.scan
+package fr.coppernic.lib.readerintentapi
 
 import org.junit.Test
 

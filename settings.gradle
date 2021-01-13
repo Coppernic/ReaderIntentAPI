@@ -1,2 +1,2 @@
-include ':scan'
-rootProject.name = "Scan"
+include ':ReaderIntentAPI'
+rootProject.name = "ReaderIntentAPI"

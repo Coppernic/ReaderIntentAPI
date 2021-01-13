@@ -1,9 +1,8 @@
-package fr.coppernic.sdk.scan
+package fr.coppernic.lib.readerintentapi
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
@@ -24,7 +23,7 @@ class ScanTest {
 
     @Before
     fun setUp() {
-        scan = Scan(InstrumentationRegistry.getInstrumentation().context)
+        scan = Scan(InstrumentationRegistry.getInstrumentation().context, Type.RFID_ICLASS)
     }
 
 
@@ -60,13 +59,27 @@ class ScanTest {
 
         scan.registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                assert(intent.action == ACTION_RFID_SUCCESS ||
-                        intent.action == ACTION_RFID_ERROR)
+                assert(
+                    intent.action == ACTION_RFID_SUCCESS ||
+                            intent.action == ACTION_RFID_ERROR
+                )
+                if (intent.action == ACTION_RFID_SUCCESS) {
+                    assert(!intent.getStringExtra(KEY_DATA_CARD_NUMBER).isNullOrEmpty())
+                    assert(!intent.getStringExtra(KEY_RFID_DATA_COMPANY_CODE).isNullOrEmpty())
+                    assert(!intent.getStringExtra(KEY_RFID_DATA_FACILITY_CODE).isNullOrEmpty())
+                    assert(!intent.getStringExtra(KEY_RFID_DATA_PACS).isNullOrEmpty())
+                    assert(!intent.getStringExtra(KEY_DATA_TYPE).isNullOrEmpty())
+                    val data = intent.getByteArrayExtra(KEY_DATA_BYTES)
+                    assert(data != null && data.isNotEmpty())
+                } else {
+                    assert(!intent.getStringExtra(KEY_DATA_ERROR_MESSAGE).isNullOrEmpty())
+                }
                 countDownLatch.countDown()
             }
         })
         scan.startScan()
         countDownLatch.await(5, TimeUnit.SECONDS)
-        assert(countDownLatch.count ==0L)
+        assert(countDownLatch.count == 0L)
+        scan.unregisterReceiver()
     }
 }
