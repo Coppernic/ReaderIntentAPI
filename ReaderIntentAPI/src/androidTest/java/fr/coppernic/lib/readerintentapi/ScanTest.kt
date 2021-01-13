@@ -11,6 +11,9 @@ import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+const val AGRIDENT_SERVICE_PACKAGE_NAME = "fr.coppernic.tools.cpcagridentwedge"
+const val BARCODE_SERVICE_PACKAGE_NAME = "fr.coppernic.features.barcode"
+const val HID_SERVICE_PACKAGE_NAME = "fr.coppernic.tools.hidiclasswedge"
 
 /**
  * Created by Michael Reynier.
@@ -23,7 +26,7 @@ class ScanTest {
 
     @Before
     fun setUp() {
-        scan = Scan(InstrumentationRegistry.getInstrumentation().context, Type.RFID_ICLASS)
+        scan = Scan(InstrumentationRegistry.getInstrumentation().context, HID_SERVICE_PACKAGE_NAME)
     }
 
 
@@ -65,9 +68,9 @@ class ScanTest {
                 )
                 if (intent.action == ACTION_SCAN_SUCCESS) {
                     assert(!intent.getStringExtra(KEY_DATA_CARD_NUMBER).isNullOrEmpty())
-                    assert(!intent.getStringExtra(KEY_RFID_DATA_COMPANY_CODE).isNullOrEmpty())
-                    assert(!intent.getStringExtra(KEY_RFID_DATA_FACILITY_CODE).isNullOrEmpty())
-                    assert(!intent.getStringExtra(KEY_RFID_DATA_PACS).isNullOrEmpty())
+                    assert(!intent.getStringExtra(KEY_HID_DATA_COMPANY_CODE).isNullOrEmpty())
+                    assert(!intent.getStringExtra(KEY_HID_DATA_FACILITY_CODE).isNullOrEmpty())
+                    assert(!intent.getStringExtra(KEY_HID_DATA_PACS).isNullOrEmpty())
                     assert(!intent.getStringExtra(KEY_DATA_TYPE).isNullOrEmpty())
                     val data = intent.getByteArrayExtra(KEY_DATA_BYTES)
                     assert(data != null && data.isNotEmpty())
@@ -81,5 +84,15 @@ class ScanTest {
         countDownLatch.await(5, TimeUnit.SECONDS)
         assert(countDownLatch.count == 0L)
         scan.unregisterReceiver()
+    }
+
+    @Test
+    fun startService() {
+        scan.startScan()
+    }
+
+    @Test
+    fun stopService() {
+        scan.stopService()
     }
 }
