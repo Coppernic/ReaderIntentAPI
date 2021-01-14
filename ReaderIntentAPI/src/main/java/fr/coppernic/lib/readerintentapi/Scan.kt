@@ -16,12 +16,12 @@ const val KEY_HID_DATA_FACILITY_CODE = "HidDataFacilityCode"
 const val KEY_HID_DATA_PACS = "HidDataPacs"
 const val KEY_DATA_TYPE = "DataType"
 const val KEY_DATA_ERROR_MESSAGE = "DataErrorMessage"
-const val ACTION_SCAN_SUCCESS = "org.scan.read.success"
-const val ACTION_SCAN_ERROR = "org.scan.read.failed"
-const val ACTION_SCAN = "org.scan.scan"
-const val ACTION_SCAN_ABORT = "org.scan.abort"
-const val ACTION_START_SERVICE = "org.scan.start.service"
-const val ACTION_STOP_SERVICE = "org.scan.stop.service"
+const val ACTION_SCAN_SUCCESS = "org.reader.intent.api.read.success"
+const val ACTION_SCAN_ERROR = "org.reader.intent.api.read.failed"
+const val ACTION_SCAN = "org.reader.intent.api.scan"
+const val ACTION_SCAN_ABORT = "org.reader.intent.api.abort"
+const val ACTION_START_SERVICE = "org.reader.intent.api.start.service"
+const val ACTION_STOP_SERVICE = "org.reader.intent.api.stop.service"
 
 /**
  * Created by Michael Reynier.

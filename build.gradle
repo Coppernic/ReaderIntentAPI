@@ -6,7 +6,6 @@ buildscript {
         google()
         jcenter()
         mavenLocal()
-        maven { url 'https://nexus.coppernic.fr/libs-release' }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.1.1"
