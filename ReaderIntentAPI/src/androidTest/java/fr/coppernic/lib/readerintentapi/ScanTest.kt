@@ -11,10 +11,6 @@ import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-const val AGRIDENT_SERVICE_PACKAGE_NAME = "fr.coppernic.tools.cpcagridentwedge"
-const val BARCODE_SERVICE_PACKAGE_NAME = "fr.coppernic.features.barcode"
-const val HID_SERVICE_PACKAGE_NAME = "fr.coppernic.tools.hidiclasswedge"
-
 /**
  * Created by Michael Reynier.
  * Date : 06/01/2021.
@@ -80,6 +76,32 @@ class ScanTest {
                 countDownLatch.countDown()
             }
         })
+        scan.startScan()
+        countDownLatch.await(5, TimeUnit.SECONDS)
+        assert(countDownLatch.count == 0L)
+        scan.unregisterReceiver()
+    }
+
+    @Test
+    fun testRegisterReceiverListener() {
+        val countDownLatch = CountDownLatch(1)
+
+        scan.registerReceiver(object:ScanListener{
+            override fun onSuccess(data: Data) {
+                assert(data.cardNumber.isNotEmpty())
+                assert(data.companyCode.isNotEmpty())
+                assert(data.facilityCode.isNotEmpty())
+                assert(data.pacs.isNotEmpty())
+                assert(data.dataType.isNotEmpty())
+                countDownLatch.countDown()
+            }
+
+            override fun onFailed(message: String) {
+                assert(message.isNotEmpty())
+                countDownLatch.countDown()
+            }
+        })
+
         scan.startScan()
         countDownLatch.await(5, TimeUnit.SECONDS)
         assert(countDownLatch.count == 0L)

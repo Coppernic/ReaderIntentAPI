@@ -5,23 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
-import fr.coppernic.sdk.core.Defines.IntentDefines.*
 
 
-//TODO to put in CpcCore
-const val KEY_DATA_BYTES = "DataBytes"
-const val KEY_DATA_CARD_NUMBER = "DataCardNumber"
-const val KEY_HID_DATA_COMPANY_CODE = "HidDataCompanyCode"
-const val KEY_HID_DATA_FACILITY_CODE = "HidDataFacilityCode"
-const val KEY_HID_DATA_PACS = "HidDataPacs"
-const val KEY_DATA_TYPE = "DataType"
-const val KEY_DATA_ERROR_MESSAGE = "DataErrorMessage"
-const val ACTION_SCAN_SUCCESS = "org.reader.intent.api.read.success"
-const val ACTION_SCAN_ERROR = "org.reader.intent.api.read.failed"
-const val ACTION_SCAN = "org.reader.intent.api.scan"
-const val ACTION_SCAN_ABORT = "org.reader.intent.api.abort"
-const val ACTION_START_SERVICE = "org.reader.intent.api.start.service"
-const val ACTION_STOP_SERVICE = "org.reader.intent.api.stop.service"
 
 /**
  * Created by Michael Reynier.
@@ -82,6 +67,38 @@ class Scan(private var context: Context, private var packageName: String) {
     fun registerReceiver(broadcastReceiver: BroadcastReceiver) {
         // Registers iClass wedge intent receiver
         this.broadcastReceiver = broadcastReceiver
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(ACTION_SCAN_SUCCESS)
+        intentFilter.addAction(ACTION_SCAN_ERROR)
+        context.registerReceiver(broadcastReceiver, intentFilter)
+    }
+
+    /**
+     * Registers receiver
+     * @param scanListener scan listener
+     */
+    fun registerReceiver(scanListener: ScanListener) {
+        // Registers iClass wedge intent receiver
+        this.broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == ACTION_SCAN_SUCCESS) {
+                    val data = intent.getByteArrayExtra(KEY_DATA_BYTES)
+                    if (data != null) scanListener.onSuccess(
+                        Data(
+                            data,
+                            intent.getStringExtra(KEY_DATA_CARD_NUMBER) ?: "",
+                            intent.getStringExtra(KEY_HID_DATA_COMPANY_CODE) ?: "",
+                            intent.getStringExtra(KEY_HID_DATA_FACILITY_CODE) ?: "",
+                            intent.getStringExtra(KEY_HID_DATA_PACS) ?: "",
+                            intent.getStringExtra(KEY_DATA_TYPE) ?: ""
+                        )
+                    ) else scanListener.onFailed("Data received is null")
+                } else if (intent.action == ACTION_SCAN_ERROR) {
+                    val message = intent.getStringExtra(KEY_DATA_ERROR_MESSAGE)
+                    if (message != null) scanListener.onFailed(message)
+                }
+            }
+        }
         val intentFilter = IntentFilter()
         intentFilter.addAction(ACTION_SCAN_SUCCESS)
         intentFilter.addAction(ACTION_SCAN_ERROR)
