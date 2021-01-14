@@ -77,7 +77,7 @@ class Scan(private var context: Context, private var packageName: String) {
      * Registers receiver
      * @param scanListener scan listener
      */
-    fun registerReceiver(scanListener: ScanListener) {
+    fun setListener(scanListener: ScanListener) {
         // Registers iClass wedge intent receiver
         this.broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
