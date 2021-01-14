@@ -74,7 +74,7 @@ class ScanTest {
                     assert(!intent.getStringExtra(KEY_DATA_TYPE).isNullOrEmpty())
                     val data = intent.getByteArrayExtra(KEY_DATA_BYTES)
                     assert(data != null && data.isNotEmpty())
-                } else {
+                } else if(intent.action == ACTION_SCAN_ERROR){
                     assert(!intent.getStringExtra(KEY_DATA_ERROR_MESSAGE).isNullOrEmpty())
                 }
                 countDownLatch.countDown()
@@ -88,7 +88,7 @@ class ScanTest {
 
     @Test
     fun startService() {
-        scan.startScan()
+        scan.startService()
     }
 
     @Test
