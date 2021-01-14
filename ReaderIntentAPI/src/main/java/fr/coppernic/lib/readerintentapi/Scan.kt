@@ -65,6 +65,7 @@ class Scan(private var context: Context, private var packageName: String) {
      * @param broadcastReceiver Broadcast Receiver which will receive the result
      */
     fun registerReceiver(broadcastReceiver: BroadcastReceiver) {
+        if(this.broadcastReceiver == null) unregisterReceiver()
         // Registers iClass wedge intent receiver
         this.broadcastReceiver = broadcastReceiver
         val intentFilter = IntentFilter()
@@ -78,6 +79,7 @@ class Scan(private var context: Context, private var packageName: String) {
      * @param scanListener scan listener
      */
     fun setListener(scanListener: ScanListener) {
+        if(this.broadcastReceiver == null) unregisterReceiver()
         // Registers iClass wedge intent receiver
         this.broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -92,10 +94,10 @@ class Scan(private var context: Context, private var packageName: String) {
                             intent.getStringExtra(KEY_HID_DATA_PACS) ?: "",
                             intent.getStringExtra(KEY_DATA_TYPE) ?: ""
                         )
-                    ) else scanListener.onFailed("Data received is null")
+                    ) else scanListener.onFailed(ReaderIntentAPIException("Data received is null"))
                 } else if (intent.action == ACTION_SCAN_ERROR) {
                     val message = intent.getStringExtra(KEY_DATA_ERROR_MESSAGE)
-                    if (message != null) scanListener.onFailed(message)
+                    if (message != null) scanListener.onFailed(ReaderIntentAPIException(message))
                 }
             }
         }
@@ -110,6 +112,7 @@ class Scan(private var context: Context, private var packageName: String) {
      */
     fun unregisterReceiver() {
         context.unregisterReceiver(broadcastReceiver)
+        broadcastReceiver = null
     }
 
     private fun sendIntent(intent: Intent) {
