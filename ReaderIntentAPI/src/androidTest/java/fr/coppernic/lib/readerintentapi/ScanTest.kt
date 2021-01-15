@@ -25,7 +25,6 @@ class ScanTest {
         scan = Scan(InstrumentationRegistry.getInstrumentation().context, HID_SERVICE_PACKAGE_NAME)
     }
 
-
     @Test
     fun testStartScan() {
         scan.startScan()
@@ -86,7 +85,7 @@ class ScanTest {
     fun testRegisterReceiverListener() {
         val countDownLatch = CountDownLatch(1)
 
-        scan.registerReceiver(object:ScanListener{
+        scan.setListener(object:ScanListener{
             override fun onSuccess(data: Data) {
                 assert(data.cardNumber.isNotEmpty())
                 assert(data.companyCode.isNotEmpty())
@@ -96,10 +95,11 @@ class ScanTest {
                 countDownLatch.countDown()
             }
 
-            override fun onFailed(message: String) {
-                assert(message.isNotEmpty())
+            override fun onFailed(exception: java.lang.Exception) {
+                assert(!exception.message.isNullOrEmpty())
                 countDownLatch.countDown()
             }
+
         })
 
         scan.startScan()
@@ -117,4 +117,5 @@ class ScanTest {
     fun stopService() {
         scan.stopService()
     }
+
 }

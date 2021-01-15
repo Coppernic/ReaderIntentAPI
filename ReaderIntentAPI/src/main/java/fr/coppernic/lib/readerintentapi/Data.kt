@@ -1,6 +1,7 @@
 package fr.coppernic.lib.readerintentapi
 
 import fr.coppernic.sdk.utils.core.CpcBytes
+import java.nio.charset.StandardCharsets
 
 /**
  * Created by Michael Reynier.
@@ -18,21 +19,27 @@ data class Data(
         if (this === other) return true
         if (other !is Data) return false
 
-        if (!bytes.contentEquals(other.bytes)) return false
+        if (!bytes.contentEquals(other.bytes) || !cardNumber.contentEquals(other.cardNumber) || !companyCode.contentEquals(
+                other.companyCode
+            ) || !facilityCode.contentEquals(other.facilityCode) || !pacs.contentEquals(other.pacs) || !dataType.contentEquals(
+                other.dataType
+            )
+        ) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return bytes.contentHashCode()
+        return bytes.contentHashCode() + cardNumber.hashCode() + companyCode.hashCode() +
+                facilityCode.hashCode() + pacs.hashCode() + dataType.hashCode()
     }
 
     fun string(): String {
-        return CpcBytes.byteArrayToUtf8String(bytes)
+        return String(bytes, StandardCharsets.UTF_8)
     }
 
     fun hexa(): String {
-        return CpcBytes.byteArrayToAsciiString(bytes)
+        return CpcBytes.byteArrayToString(bytes).replace("\\s".toRegex(), "")
     }
 }
 

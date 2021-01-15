@@ -65,7 +65,7 @@ class Scan(private var context: Context, private var packageName: String) {
      * @param broadcastReceiver Broadcast Receiver which will receive the result
      */
     fun registerReceiver(broadcastReceiver: BroadcastReceiver) {
-        if(this.broadcastReceiver == null) unregisterReceiver()
+        if(this.broadcastReceiver != null) unregisterReceiver()
         // Registers iClass wedge intent receiver
         this.broadcastReceiver = broadcastReceiver
         val intentFilter = IntentFilter()
@@ -79,7 +79,7 @@ class Scan(private var context: Context, private var packageName: String) {
      * @param scanListener scan listener
      */
     fun setListener(scanListener: ScanListener) {
-        if(this.broadcastReceiver == null) unregisterReceiver()
+        if(this.broadcastReceiver != null) unregisterReceiver()
         // Registers iClass wedge intent receiver
         this.broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
