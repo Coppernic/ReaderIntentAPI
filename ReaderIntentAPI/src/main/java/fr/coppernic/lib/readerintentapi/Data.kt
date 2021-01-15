@@ -39,7 +39,7 @@ data class Data(
     }
 
     fun hexa(): String {
-        return CpcBytes.byteArrayToString(bytes).replace("\\s".toRegex(), "")
+        return CpcBytes.byteArrayToString(bytes, bytes.size, false)
     }
 }
 
