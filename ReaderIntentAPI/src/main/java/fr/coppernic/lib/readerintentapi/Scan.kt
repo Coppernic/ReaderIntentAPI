@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.os.Build
 
 
-
 /**
  * Created by Michael Reynier.
  * Date : 06/01/2021.
@@ -65,7 +64,7 @@ class Scan(private var context: Context, private var packageName: String) {
      * @param broadcastReceiver Broadcast Receiver which will receive the result
      */
     fun registerReceiver(broadcastReceiver: BroadcastReceiver) {
-        if(this.broadcastReceiver != null) unregisterReceiver()
+        this.broadcastReceiver?.unregister(context)
         // Registers iClass wedge intent receiver
         this.broadcastReceiver = broadcastReceiver
         val intentFilter = IntentFilter()
@@ -79,9 +78,9 @@ class Scan(private var context: Context, private var packageName: String) {
      * @param scanListener scan listener
      */
     fun setListener(scanListener: ScanListener) {
-        if(this.broadcastReceiver != null) unregisterReceiver()
+        broadcastReceiver?.unregister(context)
         // Registers iClass wedge intent receiver
-        this.broadcastReceiver = object : BroadcastReceiver() {
+        broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == ACTION_SCAN_SUCCESS) {
                     val data = intent.getByteArrayExtra(KEY_DATA_BYTES)
@@ -122,6 +121,10 @@ class Scan(private var context: Context, private var packageName: String) {
         } else {
             context.startService(intent) ?: throw ReaderIntentAPIException("Service not found")
         }
+    }
+
+    private fun BroadcastReceiver.unregister(context: Context) {
+        context.unregisterReceiver(this)
     }
 
 }
