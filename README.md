@@ -36,7 +36,11 @@ For Barcode
 var scan = Scan(context, "fr.coppernic.features.barcode")
 ```
 
-- Register Receiver
+- Register Receiver or set Listener
+
+You can choose between providing a BroadcastReceiver or setting a listener
+
+With a BroadcastReceiver :
 
 ```kotlin
 scan.registerReceiver(object : BroadcastReceiver() {
@@ -49,6 +53,23 @@ scan.registerReceiver(object : BroadcastReceiver() {
                     //handle error
                 }              
             }
+        })
+```
+
+with a listener:
+```kotlin
+ scan.setListener(object : ScanListener {
+            override fun onSuccess(data: Data) {
+                val dataBytes = data.bytes
+                val dataCardNUmber = data.cardNumber
+                //handle data
+            }
+
+            override fun onFailed(exception: java.lang.Exception) {
+                val ex = exception.message
+                //handle error
+            }
+
         })
 ```
 
