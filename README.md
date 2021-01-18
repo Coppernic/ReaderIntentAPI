@@ -16,7 +16,7 @@ Add the following dependency :
 
 ``` groovy
 dependencies {
-    implementation 'fr.coppernic.lib.readerintentapi:readerintentapi:0.1.0'
+    implementation 'fr.coppernic.lib.ReaderIntentAPI:ReaderIntentAPI:0.1.0'
 }
 ```
 
